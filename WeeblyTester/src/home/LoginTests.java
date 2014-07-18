@@ -7,10 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import config.Config;
+
 public class LoginTests {
 	private Home page;
-	private final static String defaultEmail ="weeblytester7@gmail.com";
-	private final static String defaultPassword ="T3st1t";
 
 	@Before
 	public void setUp() throws Exception {
@@ -19,7 +19,7 @@ public class LoginTests {
 	}
 	@Test
 	public void testLogin() throws InterruptedException {
-		page.loginAs(defaultEmail, defaultPassword);
+		page.loginAs(Config.defaultEmail, Config.defaultPassword);
 		assertTrue(page.isLoggedIn());
 	}
 	@Test
@@ -29,17 +29,17 @@ public class LoginTests {
 	}
 	@Test
 	public void testloginWithoutUser() throws InterruptedException {
-		page.loginAsExpectingError("", defaultPassword);
+		page.loginAsExpectingError("", Config.defaultPassword);
 		assertEquals("Wrong username or password.", page.getLoginErrorMessage());
 	}
 	@Test
 	public void testloginWithoutPassword() throws InterruptedException {
-		page.loginAsExpectingError(defaultEmail, "");
+		page.loginAsExpectingError(Config.defaultEmail, "");
 		assertEquals("Wrong username or password.", page.getLoginErrorMessage());
 	}
 	@Test
 	public void testloginWithInvalidPassword() throws InterruptedException {
-		page.loginAsExpectingError(defaultEmail, "invalid");
+		page.loginAsExpectingError(Config.defaultEmail, "invalid");
 		assertEquals("Wrong username or password", page.getLoginErrorMessage());
 	}
 	@After
