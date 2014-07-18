@@ -33,7 +33,6 @@ public class DragAndDropTests {
 		page.removeAllItemFromPage();
 		page.quit();
 	}
-
 	@Test
 	public void testDragAndDropAndDelete() throws InterruptedException {
 		page.dragBoxToPage(Boxes.Title);
@@ -62,4 +61,33 @@ public class DragAndDropTests {
 		assertTrue(page.hasBoxOnPage(1));
 
 	}
+	@Test
+	public void testDragAndDrop2ItemsAt0() throws InterruptedException {
+		page.dragBoxToPage(Boxes.Title,0);
+		page.dragBoxToPage(Boxes.Image,0);
+	}
+	@Test
+	public void testDragAndDrop2ItemsAt01() throws InterruptedException {
+		page.dragBoxToPage(Boxes.Title,0);
+		page.dragBoxToPage(Boxes.Image,1);
+	}
+	@Test
+	public void testDragAndDrop3ItemsAt010() throws InterruptedException {
+		page.dragBoxToPage(Boxes.Title,0);
+		page.dragBoxToPage(Boxes.Image,1);
+		page.dragBoxToPage(Boxes.Text,0);
+	}	
+	/*@Test
+	public void testDragAndDrop3ItemsAt011() throws InterruptedException {
+		page.dragBoxToPage(Boxes.Title,0);
+		page.dragBoxToPage(Boxes.Image,1);
+		page.dragBoxToPage(Boxes.Text,1);
+	}*/
+	@Test
+	public void testDragAndDrop3ItemsAt012() throws InterruptedException {
+		page.dragBoxToPage(Boxes.Title,0);
+		page.dragBoxToPage(Boxes.Image,1);
+		page.dragBoxToPage(Boxes.Text,2);
+	}
+
 }

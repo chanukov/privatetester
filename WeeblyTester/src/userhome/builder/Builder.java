@@ -74,11 +74,12 @@ public class Builder extends Page {
 
 		dragAndDrop.perform();
 		Thread.sleep(600);
-		contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
-		while(contents.findElements(By.className("inside")).size() == curPage.size()){
+		int contentsize = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist"))).findElements(By.className("inside")).size();
+		while(contentsize == curPage.size()){
 			Thread.sleep(100);
-			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+			contentsize = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist"))).findElements(By.className("inside")).size();
 		}
+		contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
 	}
 	
@@ -111,7 +112,7 @@ public class Builder extends Page {
 			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		}
 		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
-	}	
+	}
 	/*
 	 * Removes an item from the page
 	 */
@@ -132,6 +133,7 @@ public class Builder extends Page {
 		Thread.sleep(1000);
 		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-danger"))).click();
+		contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		while(contents.findElements(By.className("inside")).size() == curPage.size()){
 			Thread.sleep(100);
 			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
@@ -139,7 +141,7 @@ public class Builder extends Page {
 		curPage.remove(index);
 	}
 	/*
-	 * 
+	 * removes all the items from the page
 	 */
 	public void removeAllItemFromPage() throws InterruptedException {
 		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
