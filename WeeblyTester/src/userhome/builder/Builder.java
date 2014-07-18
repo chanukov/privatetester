@@ -1,11 +1,11 @@
 package userhome.builder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
@@ -62,7 +62,8 @@ public class Builder extends Page {
 	 */
 	public void dragBoxToPage(Boxes box) throws InterruptedException {
 		Actions actions = new Actions(driver);
-		
+		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
 		WebElement boxEl =wait.until(ExpectedConditions.elementToBeClickable(By.className(box.elementClass)));	
 		WebElement emptyArea = driver.findElement(By.id("secondlist"));
 		
@@ -73,23 +74,29 @@ public class Builder extends Page {
 
 		dragAndDrop.perform();
 		Thread.sleep(600);
-		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		while(contents.findElements(By.className("inside")).size() == curPage.size()){
 			Thread.sleep(100);
 			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		}
 		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
-		//elementMap.put(curPageText, curPage); update when moving between pages instead of every time
 	}
 	
 	/*
 	 * Drag box to the page at index
 	 */
 	public void dragBoxToPage(Boxes box,int index) throws InterruptedException {
+		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
 		Actions actions = new Actions(driver);
-		
+		WebElement emptyArea;
+		if( curPage.size() == index){
+			this.dragBoxToPage(box);
+			return;
+		}else {
+			emptyArea = curPage.get(index);
+		}
 		WebElement boxEl =wait.until(ExpectedConditions.elementToBeClickable(By.className(box.elementClass)));	
-		WebElement emptyArea = driver.findElement(By.id("secondlist"));
 		
 		Action dragAndDrop = actions.clickAndHold(boxEl)
 			       .moveToElement(emptyArea)
@@ -97,14 +104,13 @@ public class Builder extends Page {
 			       .build();
 
 		dragAndDrop.perform();
-		Thread.sleep(500);
-		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		Thread.sleep(600);
+		contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		while(contents.findElements(By.className("inside")).size() == curPage.size()){
 			Thread.sleep(100);
 			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		}
 		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
-		//elementMap.put(curPageText, curPage); update when moving between pages instead of every time
 	}	
 	/*
 	 * Removes an item from the page
@@ -123,21 +129,30 @@ public class Builder extends Page {
 		actions.moveToElement(del);
 		actions.click(del);
 		actions.perform();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-danger"))).click();
 		while(contents.findElements(By.className("inside")).size() == curPage.size()){
 			Thread.sleep(100);
 			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
 		}
-		wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-danger"))).click();		
 		curPage.remove(index);
 	}
 	/*
 	 * 
 	 */
-	public void removeAllItemFromPage() throws InterruptedException {		
-		for(int index =curPage.size() -1; index >=0;index--){
-			this.removeItemFromPage(index);
+	public void removeAllItemFromPage() throws InterruptedException {
+		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
+		while(curPage.size() >0){
+			try{
+			this.removeItemFromPage(0);
+			}catch(StaleElementReferenceException e){
+				break;
+			}
+			Thread.sleep(300);
+			contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+			curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
 		}
 	}
 	/*
@@ -145,6 +160,12 @@ public class Builder extends Page {
 	 * Name the element for later use
 	 */
 	public boolean hasBoxOnPage(int index) throws InterruptedException {
+		WebElement contents = wait.until(ExpectedConditions.elementToBeClickable(By.id("secondlist")));
+		try{
+		curPage = (ArrayList<WebElement>) contents.findElements(By.className("inside"));
+		}catch(StaleElementReferenceException e){
+			return this.hasBoxOnPage(index);
+		}
 		if(index >= curPage.size()){
 			return false;
 		}

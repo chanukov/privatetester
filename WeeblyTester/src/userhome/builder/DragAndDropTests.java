@@ -13,7 +13,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import userhome.builder.Builder.Boxes;
 import config.Config;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DragAndDropTests {
 	private Home homepage;
 	private Builder page;
@@ -42,9 +41,20 @@ public class DragAndDropTests {
 		page.removeItemFromPage(0);
 		assertFalse(page.hasBoxOnPage(0));
 	}
-	
 	@Test
-	public void testDragAndDrop2() throws InterruptedException {
+	public void testDragAndDropAndDeleteAt2() throws InterruptedException {
+		page.dragBoxToPage(Boxes.Title);
+		page.dragBoxToPage(Boxes.Image);
+
+		assertTrue(page.hasBoxOnPage(0));
+		assertTrue(page.hasBoxOnPage(1));
+		page.removeItemFromPage(1);
+		assertFalse(page.hasBoxOnPage(1));
+		assertTrue(page.hasBoxOnPage(0));
+
+	}
+	@Test
+	public void testDragAndDrop2Items() throws InterruptedException {
 		page.dragBoxToPage(Boxes.Title);
 		page.dragBoxToPage(Boxes.Image);
 
